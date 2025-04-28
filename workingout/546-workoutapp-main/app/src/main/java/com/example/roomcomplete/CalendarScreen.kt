@@ -28,11 +28,15 @@ fun CalendarScreen(viewModel: WorkoutViewModel, navController: NavHostController
 
     val daysInMonth = selectedMonth.lengthOfMonth()
     val firstDayOfMonth = selectedMonth.atDay(1).dayOfWeek.value % 7 // Sunday = 0
+    val monthFormatter = DateTimeFormatter.ofPattern("yyyy-MM")
+    val currentMonthString = selectedMonth.format(monthFormatter)
+    val workoutsThisMonth = workoutDates.count { it.startsWith(currentMonthString) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+
     ) {
         // Month Selector
         Row(
@@ -54,6 +58,15 @@ fun CalendarScreen(viewModel: WorkoutViewModel, navController: NavHostController
 
         Spacer(Modifier.height(16.dp))
 
+
+
+        Text(
+            text = "You worked out $workoutsThisMonth days this month!",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+
+        Spacer(Modifier.height(16.dp))
         // Day Titles (Sun, Mon, etc.)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
             listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat").forEach { day ->
