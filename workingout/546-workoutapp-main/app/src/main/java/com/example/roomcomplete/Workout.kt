@@ -12,6 +12,5 @@ data class Workout(
     val mood: String,
     val music: String,
     val weights: String,
-    val machines: String,
-    val imagePath: String? = null
+    val machines: String
 )

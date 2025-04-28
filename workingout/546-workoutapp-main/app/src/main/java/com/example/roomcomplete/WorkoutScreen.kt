@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -23,21 +24,17 @@ fun WorkoutScreen(viewModel: WorkoutViewModel, navController: NavHostController)
     val workouts by viewModel.workouts.observeAsState(emptyList())
     val context = LocalContext.current
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Button(
-            onClick = { navController.navigate("add_workout_screen") },
-            modifier = Modifier.fillMaxWidth()
+        // Main content (LazyColumn for workouts)
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopCenter)
         ) {
-            Text("Add Workout")
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-        LazyColumn {
             items(workouts) { workout ->
                 Card(
                     modifier = Modifier
@@ -52,28 +49,36 @@ fun WorkoutScreen(viewModel: WorkoutViewModel, navController: NavHostController)
                         Text("Music: ${workout.music}")
                         Text("Weights: ${workout.weights}")
                         Text("Machines: ${workout.machines}")
-                        workout.imagePath?.let { Text("Image Path: $it") }
+                    }
 
-                        Spacer(modifier = Modifier.height(8.dp)) // small space before buttons
+                    Spacer(modifier = Modifier.height(8.dp)) // small space before buttons
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = {
+                                viewModel.deleteWorkout(workout)
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                         ) {
-                            Button(
-                                onClick = {
-                                    viewModel.deleteWorkout(workout)
-                                },
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                            ) {
-                                Text("Delete")
-                            }
+                            Text("Delete")
                         }
                     }
                 }
             }
         }
 
+        // Home button fixed at the bottom
+        Button(
+            onClick = { navController.navigate("welcome_screen") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter) // Align at the bottom center
+        ) {
+            Text("Home")
+        }
     }
 }
 
@@ -82,10 +87,10 @@ suspend fun exportToCSV(context: Context, viewModel: WorkoutViewModel) {
     val file = File(context.filesDir, "gym_data.csv")
     val writer = FileWriter(file)
 
-    writer.append("Date,Note,Activity,Mood,Music,Weights,Machines,ImagePath\n")
+    writer.append("Date,Note,Activity,Mood,Music,Weights,Machines\n")
     for (w in workouts) {
         writer.append(
-            "\"${w.date}\",\"${w.text}\",\"${w.activity}\",\"${w.mood}\",\"${w.music}\",\"${w.weights}\",\"${w.machines}\",\"${w.imagePath ?: ""}\"\n"
+            "\"${w.date}\",\"${w.text}\",\"${w.activity}\",\"${w.mood}\",\"${w.music}\",\"${w.weights}\",\"${w.machines}\"\n"
         )
     }
 

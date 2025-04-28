@@ -22,8 +22,7 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
         mood: String,
         music: String,
         weights: String,
-        machines: String,
-        imagePath: String?
+        machines: String
     ) = viewModelScope.launch {
         val workout = Workout(
             date = date,
@@ -32,8 +31,7 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             mood = mood,
             music = music,
             weights = weights,
-            machines = machines,
-            imagePath = imagePath
+            machines = machines
         )
         repo.addWorkout(workout)
     }

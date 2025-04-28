@@ -1,4 +1,3 @@
-// WorkoutTimerScreen.kt
 package com.example.roomcomplete
 
 import android.os.Vibrator
@@ -7,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,73 +30,86 @@ fun WorkoutTimerScreen(navController: NavHostController) {
         if (timeLeft == 0 && isRunning) {
             isRunning = false
             vibratePhone(context)
-
             playNotificationSound(context)   // ➡️ also play a beep
             timeLeft = totalTime              // ➡️ reset timer automatically
-
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
+            .padding(24.dp)
     ) {
-
-        Text(
-            text = "Time Left: $timeLeft sec",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Button(onClick = { setTime(30) { totalTime = it; timeLeft = it } }) { Text("30s") }
-            Button(onClick = { setTime(60) { totalTime = it; timeLeft = it } }) { Text("60s") }
-            Button(onClick = { setTime(90) { totalTime = it; timeLeft = it } }) { Text("90s") }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = customInput,
-            onValueChange = { customInput = it },
-            label = { Text("Custom (seconds)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Button(
-            onClick = {
-                customInput.toIntOrNull()?.let {
-                    totalTime = it
-                    timeLeft = it
-                }
-            },
+        // Main content
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp)
+                .align(Alignment.Center) // Center the main content
         ) {
-            Text("Set Custom Time")
+            Text(
+                text = "Time Left: $timeLeft sec",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(onClick = { setTime(30) { totalTime = it; timeLeft = it } }) { Text("30s") }
+                Button(onClick = { setTime(60) { totalTime = it; timeLeft = it } }) { Text("60s") }
+                Button(onClick = { setTime(90) { totalTime = it; timeLeft = it } }) { Text("90s") }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = customInput,
+                onValueChange = { customInput = it },
+                label = { Text("Custom (seconds)") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Button(
+                onClick = {
+                    customInput.toIntOrNull()?.let {
+                        totalTime = it
+                        timeLeft = it
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+            ) {
+                Text("Set Custom Time")
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(onClick = { isRunning = true }, enabled = !isRunning) { Text("Start") }
+                Button(onClick = { isRunning = false }, enabled = isRunning) { Text("Pause") }
+                Button(onClick = {
+                    isRunning = false
+                    timeLeft = totalTime
+                }) { Text("Reset") }
+            }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+        // Home button fixed at the bottom
+        Button(
+            onClick = { navController.navigate("welcome_screen") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter) // Align at the bottom center
         ) {
-            Button(onClick = { isRunning = true }, enabled = !isRunning) { Text("Start") }
-            Button(onClick = { isRunning = false }, enabled = isRunning) { Text("Pause") }
-            Button(onClick = {
-                isRunning = false
-                timeLeft = totalTime
-            }) { Text("Reset") }
+            Text("Home")
         }
     }
 }
@@ -106,7 +119,6 @@ private fun setTime(seconds: Int, setTime: (Int) -> Unit) {
 }
 
 private fun vibratePhone(context: Context) {
-
     val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     vibrator.vibrate(android.os.VibrationEffect.createOneShot(500, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
 
@@ -127,6 +139,7 @@ private fun vibratePhone(context: Context) {
         e.printStackTrace()
     }
 }
+
 private fun playNotificationSound(context: Context) {
     try {
         val notification = android.provider.Settings.System.DEFAULT_NOTIFICATION_URI
@@ -135,5 +148,4 @@ private fun playNotificationSound(context: Context) {
     } catch (e: Exception) {
         e.printStackTrace()
     }
-
 }
