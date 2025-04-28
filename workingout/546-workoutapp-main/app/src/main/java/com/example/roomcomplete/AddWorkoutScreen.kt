@@ -91,8 +91,14 @@ fun AddWorkoutScreen(viewModel: WorkoutViewModel, navController: NavHostControll
                             viewModel.addWorkout(
                                 date, text, activity, mood, music, weights, machines
                             )
+                            // Clear fields
                             date = ""; text = ""; activity = ""; mood = ""
                             music = ""; weights = ""; machines = ""
+
+                            // Navigate to the workouts screen
+                            navController.navigate("workout_screen")
+                        } else {
+                            Toast.makeText(context, "Please pick a date first!", Toast.LENGTH_SHORT).show()
                         }
                     },
                     modifier = Modifier
