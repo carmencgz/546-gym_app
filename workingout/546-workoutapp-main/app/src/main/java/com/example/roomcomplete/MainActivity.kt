@@ -27,6 +27,10 @@ class MainActivity : ComponentActivity() {
                     composable("workout_screen") {
                         WorkoutScreen(viewModel = viewModel(), navController = navController)
                     }
+                    composable("calendar_screen") {
+                        CalendarScreen(viewModel = viewModel(), navController = navController)
+                    }
+
                     composable("timer_screen") {
                         WorkoutTimerScreen(navController)
                     }

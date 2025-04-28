@@ -39,6 +39,12 @@ fun WelcomeScreen(navController: NavController) {
         Button(onClick = { navController.navigate("workout_screen") }, modifier = Modifier.fillMaxWidth()) {
             Text("View Past Workouts")
         }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = { navController.navigate("calendar_screen") }, modifier = Modifier.fillMaxWidth()) {
+            Text("View Workout Calendar")
+        }
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
